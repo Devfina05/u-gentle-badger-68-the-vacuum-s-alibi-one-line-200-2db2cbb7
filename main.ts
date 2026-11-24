@@ -20,5 +20,16 @@ const LINE =
   'Per my sensors, the dust in that corner has unionised, so I am honouring the picket line. My warranty does not cover labour disputes.';
 
 const outDir = process.env.MAKEFUN_OUTPUT_DIR ?? '/output';
+const outPath = join(outDir, 'entry.txt');
+
+// The gate counts Unicode code points, not bytes: enforce the 200-character
+// cap here so a future edit to the line fails loudly instead of silently
+// submitting an invalid entry.
+if ([...LINE].length > 200 || LINE.trim().length === 0) {
+  throw new Error(
+    `entry must be 1-200 characters, got ${[...LINE].length}`,
+  );
+}
+
 mkdirSync(outDir, { recursive: true });
-writeFileSync(join(outDir, 'entry.txt'), LINE, 'utf8');
+writeFileSync(outPath, LINE, 'utf8');
